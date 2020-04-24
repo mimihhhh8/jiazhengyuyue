@@ -1,0 +1,16 @@
+.logo {
+  width: 200px;
+  height: 31px;
+  float: left;
+  color: #fff;
+  font-size: 23px;
+}
+.content{
+  min-height: inherit;
+  width: 100%;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  background: red;
+}
+
