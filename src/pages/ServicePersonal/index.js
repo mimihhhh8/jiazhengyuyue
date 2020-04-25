@@ -200,11 +200,6 @@ class index extends Component {
                     服务详情
                   </Button>
                 </Menu.Item>
-                <Menu.Item key="2">
-                  <Button size={'small'} onClick={() => this.handlepingjia(record)}>
-                    评价
-                  </Button>
-                </Menu.Item>
                 <Menu.Item key="4" onClick={() => this.hanndleDelete(record)}>
                   <Button size={'small'}>
                     {/* <DeleteOutlined /> */}

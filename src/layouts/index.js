@@ -115,12 +115,15 @@ export default class BasicLayout extends Component {
                     <Menu.Item key="3" onClick={() => router.push('/addServe')}>
                       完善信息
                     </Menu.Item>
-                    <Menu.Item key="5" onClick={() => router.push('/mineAppointment')}>
-                      我的预约
+                    <Menu.Item key="5" onClick={() => router.push('/my')}>
+                    个人信息
                     </Menu.Item>
                     <Menu.Item key="7" onClick={() => router.push('/mineAppointment')}>
-                      我的信息
+                    我的预约
                     </Menu.Item>
+                    {/* <Menu.Item key="9" onClick={() => router.push('/my')}>
+                      个人信息
+                    </Menu.Item> */}
                   </SubMenu>
                 ) : null}
               </Menu>

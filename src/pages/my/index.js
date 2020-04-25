@@ -15,7 +15,6 @@ class index extends Component {
       Yylist: [],
       rec: '',
       flag: true,
-
       visible: false,
       YyDetailcolumns: [
         {
@@ -188,7 +187,6 @@ class index extends Component {
     this.setState(
       {
         visible: false,
-        flag:false
       },
       () => {
         let id = localStorage.getItem('usersid');
@@ -251,16 +249,16 @@ class index extends Component {
           onChange={key => this.dataRefresh(key)}
           type="card"
         >
-          {/* <TabPane tab="我的个人信息" key="1">
+          <TabPane tab="我的个人信息" key="1">
             <Table
               rowKey={item => item._id}
               dataSource={this.state.list}
               columns={this.state.columns}
             />
-          </TabPane> */}
-          <TabPane tab="查看我的预约" key="1">
-            <Table dataSource={this.state.Yylist} columns={this.state.YyDetailcolumns} />}
           </TabPane>
+          {/* <TabPane tab="查看我的预约" key="2">
+            <Table dataSource={this.state.Yylist} columns={this.state.YyDetailcolumns} />}
+          </TabPane> */}
         </Tabs>
       </div>
     );

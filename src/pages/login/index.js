@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Contents } from './styled.js';
-import { Input, Tooltip, Icon, Radio, Button, message } from 'antd';
+import {Form ,Input, Tooltip, Icon, Radio, Button, message } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
 class index extends Component {
@@ -14,6 +14,7 @@ class index extends Component {
   }
   //渲染
   render() {
+    const { getFieldDecorator } = this.props.form;
     return (
       <Contents>
         <div className="Centerbox">
@@ -30,28 +31,41 @@ class index extends Component {
               <Radio value={'unadmin'}>服务人员</Radio>
             </Radio.Group>
           </div>
-          <div className="username">
-            <Input //登录用户名
-              placeholder="username"
+          <Form onSubmit={this.handleSubmit} className="">
+          <Form.Item>
+          {getFieldDecorator('username', {
+            rules: [
+              { required: true,message: '请输入用户名！',min:4},
+              { message: '用户名长度应大于3小于12位！',min:3,max:12},
+              { message: '用户名只能含有数字、英文、下划线!',pattern:/^[a-zA-Z0-9_]+$/ },//+号可以匹配任意多个字符
+            ],
+            initialValue: 'admin', // 初始值
+          })(
+            <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              suffix={
-                <Tooltip title="Extra information">
-                  <Icon type="info-circle" style={{ color: 'rgba(0,0,0,.45)' }} />
-                </Tooltip>
-              }
-              onChange={this.userName}
-            />
-          </div>
-          <div className="userpass">
-            <Input.Password
-              placeholder="password"
+              placeholder="用户名"
+            />,
+          )}
+          </Form.Item>
+          <Form.Item>
+          {getFieldDecorator('password', {
+            rules: [
+              { validator:this.validatorPwd},//自定义校验规则
+            ],
+            initialValue: 'admin', // 初始值
+          })(
+            <Input
               prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              onChange={this.userPassword}
+              type="password"
+              placeholder="密码"
             />
-          </div>
-          <div className="submit"></div>
+          )}
+          </Form.Item>
+
+         
+          <Form.Item>
           <div className="jump_link">
-            <Button type="primary" onClick={() => this.handleSubmit()}>
+            <Button type="primary" htmlType="submit" className='login-btn' onClick={() => this.handleSubmit()}>
               登录
             </Button>
             <Button
@@ -64,6 +78,8 @@ class index extends Component {
               注册
             </Button>
           </div>
+          </Form.Item>
+        </Form>
         </div>
       </Contents>
     );
@@ -74,62 +90,97 @@ class index extends Component {
       value: e.target.value,
     });
   };
-  //用户名
-  userName = e => {
-    this.setState({
-      username: e.target.value,
-    });
-  };
-  //用户密码
-  userPassword = e => {
-    this.setState({
-      password: e.target.value,
-    });
-  };
-  handleSubmit() {
-    //value,username,password在使用这三个值的时候需要先解构出来
-    let { username, password, value } = this.state;
-    // console.log(value,username,password)
-    let payload = {
-      username,
-      password,
-      value,
-    };
-    new Promise((resolve, reject) => {
-      this.props.dispatch({
-        type: 'user/login',
-        resolve,
-        reject,
-        payload,
-      });
-    }).then(data => {
-      console.log(data, 'user');
-      if (data.data.code === 1) {
-        // alert(data.data.info);
-        localStorage.setItem('userstatus', data.data.data.userstatus);
-        localStorage.setItem('usersid', data.data.data._id);
-        localStorage.setItem('name', data.data.data.username);
-        if (localStorage.getItem('userstatus') === 'admin') {
-          router.push('/serveList');
-        } else if (localStorage.getItem('userstatus') === 'unadmin') {
-          router.push('/addServe');
-        } else if (localStorage.getItem('userstatus') === 'superadmin') {
-          router.push('/admin');
-        } else {
-          // alert('什么情况');
-        }
-      } else {
-        // alert(data.data.info);
-        message.error(data.data.info);
-      }
-    });
+  validatorPwd=(rule, value, callback)=>{
+    // 无论验证成功与否callback()必须调用
+    if(!value){
+      callback('请输入密码！')
+    }else if(value.length<4||value.length>12){
+      callback('密码长度应大于4小于12位！') //验证不通过传入错误提示
+    }
+    callback()//验证成功无提示
   }
+  handleSubmit = e => {
+    this.props.form.validateFields(
+      async (err, values) => { //可以对所有结果校验，并返回结果
+        if (!err) {
+          values.value=this.state.value;
+         const  payload=Object.assign(values)
+         new Promise((resolve, reject) => {
+          this.props.dispatch({
+            type: 'user/login',
+            resolve,
+            reject,
+            payload,
+          });
+        }).then(data => {
+          console.log(data, 'user');
+          if (data.data.code === 1) {
+            // alert(data.data.info);
+            localStorage.setItem('userstatus', data.data.data.userstatus);
+            localStorage.setItem('usersid', data.data.data._id);
+            localStorage.setItem('name', data.data.data.username);
+            if (localStorage.getItem('userstatus') === 'admin') {
+              router.push('/serveList');
+            } else if (localStorage.getItem('userstatus') === 'unadmin') {
+              router.push('/addServe');
+            } else if (localStorage.getItem('userstatus') === 'superadmin') {
+              router.push('/admin');
+            } else {
+              // alert('什么情况');
+            }
+          } else {
+            // alert(data.data.info);
+            message.error(data.data.info);
+          }
+        });
+        }
+      });
+  };
+  // handleSubmit() {
+  //   //value,username,password在使用这三个值的时候需要先解构出来
+ 
+  //   // console.log(value,username,password)
+  //   let payload = {
+  //     username,
+  //     password,
+  //     value,
+  //   };
+  //   new Promise((resolve, reject) => {
+  //     this.props.dispatch({
+  //       type: 'user/login',
+  //       resolve,
+  //       reject,
+  //       payload,
+  //     });
+  //   }).then(data => {
+  //     console.log(data, 'user');
+  //     if (data.data.code === 1) {
+  //       // alert(data.data.info);
+  //       localStorage.setItem('userstatus', data.data.data.userstatus);
+  //       localStorage.setItem('usersid', data.data.data._id);
+  //       localStorage.setItem('name', data.data.data.username);
+  //       if (localStorage.getItem('userstatus') === 'admin') {
+  //         router.push('/serveList');
+  //       } else if (localStorage.getItem('userstatus') === 'unadmin') {
+  //         router.push('/addServe');
+  //       } else if (localStorage.getItem('userstatus') === 'superadmin') {
+  //         router.push('/admin');
+  //       } else {
+  //         // alert('什么情况');
+  //       }
+  //     } else {
+  //       // alert(data.data.info);
+  //       message.error(data.data.info);
+  //     }
+  //   });
+  // }
 }
 //映射
+const WrappeLoginForm = Form.create({ name: 'normal_login' })(index);
 function mapStateToProps(state) {
   //解构出来个dispatch派发action(异步给了effect)(同步给了reducers)
   return {
     ...state,
   };
 }
-export default connect(mapStateToProps)(index);
+export default connect(mapStateToProps)(WrappeLoginForm);

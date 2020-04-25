@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { Contents } from './styled.js';
-import { Input, Tooltip, Icon, Radio, Button, Select } from 'antd';
+import { Form, Icon,Input, message, Radio, Button, Select } from 'antd';
 import { connect } from 'dva';
 import router from 'umi/router';
 class index extends Component {
   constructor(props) {
     super(props);
+    this.onChange=this.onChange.bind(this)
     this.state = {
       value: 'admin',
       username: '',
@@ -20,6 +21,7 @@ class index extends Component {
   }
   //渲染
   render() {
+    const { getFieldDecorator } = this.props.form;
     return (
       <Contents>
         <div className="Centerbox">
@@ -36,104 +38,114 @@ class index extends Component {
               <Radio value={'unadmin'}>服务人员</Radio>
             </Radio.Group>
           </div>
-          <div className="username">
-            <Input //登录用户名
-              placeholder="username"
+          <div>
+          <Form onSubmit={this.handleSubmit} className="">
+          <Form.Item>
+          {getFieldDecorator('username', {
+            rules: [
+              { required: true,message: '请输入用户名！',min:4},
+              { message: '用户名长度应大于3小于12位！',min:3,max:12},
+              { message: '用户名只能含有数字、英文、下划线!',pattern:/^[a-zA-Z0-9_]+$/ },//+号可以匹配任意多个字符
+            ],
+            initialValue: 'admin', // 初始值
+          })(
+            <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              suffix={
-                <Tooltip title="Extra information">
-                  <Icon type="info-circle" style={{ color: 'rgba(0,0,0,.45)' }} />
-                </Tooltip>
-              }
-              onChange={this.userName}
-            />
-          </div>
-          <div className="loginid">
-            <Input //用户id
-              placeholder="loginid"
-              prefix={<Icon type="idcard" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              suffix={
-                <Tooltip title="Extra information">
-                  <Icon type="info-circle" style={{ color: 'rgba(0,0,0,.45)' }} />
-                </Tooltip>
-              }
-              onChange={this.loginid}
-            />
-          </div>
-          <div className="phone">
-            <Input //用户手机号
-              placeholder="phone"
-              prefix={<Icon type="phone" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              suffix={
-                <Tooltip title="Extra information">
-                  <Icon type="info-circle" style={{ color: 'rgba(0,0,0,.45)' }} />
-                </Tooltip>
-              }
-              onChange={this.phone}
-            />
-          </div>
-          {/* 性别 */}
-          <div className="sex">
-            <Select
-              defaultValue="男"
-              style={{ width: 120 }}
-              onChange={(value) => this.handleChange(value)}
-            >
-              <Select.Option value="男">男</Select.Option>
-              <Select.Option value="女">女</Select.Option>
-            </Select>
-          </div>
-          {/* 年龄 */}
-          <div className="age">
+              placeholder="用户名"
+            />,
+          )}
+          </Form.Item>
+          <Form.Item>
+          {getFieldDecorator('password', {
+            rules: [
+              { validator:this.validatorPwd},//自定义校验规则
+            ],
+            initialValue: 'admin', // 初始值
+          })(
             <Input
-              placeholder="age"
-              prefix={<Icon type="team" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              suffix={
-                <Tooltip title="Extra information">
-                  <Icon type="info-circle" style={{ color: 'rgba(0,0,0,.45)' }} />
-                </Tooltip>
-              }
-              onChange={this.age}
-            />
-          </div>
-          {/* 详细地址 */}
-          <div className="detailaddress">
-            <Input
-              placeholder="detailed address "
-              prefix={<Icon type="team" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              suffix={
-                <Tooltip title="Extra information">
-                  <Icon type="info-circle" style={{ color: 'rgba(0,0,0,.45)' }} />
-                </Tooltip>
-              }
-              onChange={this.detailaddress}
-            />
-          </div>
-          <div className="userpass">
-            <Input.Password
-              placeholder="password"
               prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              onChange={this.userPassword}
-            />
-          </div>
-          {/* 
+              type="password"
+              placeholder="密码"
+            />,
+          )}
+          </Form.Item>
+          {/* loginid */}
+          <Form.Item>
+          {getFieldDecorator('loginid', {
+            rules: [
+              { required: true,message: '请输入身份证号码！',min:4},
+              { message: '请输入正确的身份证号码',pattern:/^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/ },//+号可以匹配任意多个字符
+            ],
+            initialValue: '', // 初始值
+          })(
+            <Input
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="身份证号码"
+            />,
+          )}
+          </Form.Item>
 
-<Button type="primary" onClick={() => this.handleSubmit()}>
-              登录
-            </Button>
-            <Button
-              type="primary"
-              style={{ marginleft: '30px' }}
-              onClick={() => {
-                router.push('/register');
-              }}
-            >
-              注册
-            </Button>
-*/}
+          <Form.Item>
+          {getFieldDecorator('phone', {
+            rules: [
+              { required: true,message: '请输入正确的手机号',min:4},
+              { message: '请输入正确的手机号',pattern:/^1[3456789]\d{9}$/ },
+            ],
+            initialValue: '', // 初始值
+          })(
+            <Input
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="手机号"
+            />,
+          )}
+          </Form.Item>    
 
+          <Form.Item>
+          {getFieldDecorator('sex', {
+            rules: [
+              { required: true,message: '请输入性别！',min:1},
+            ],
+            initialValue: '', // 初始值
+          })(
+            <Input
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="性别"
+            />,
+          )}
+          </Form.Item>   
+          <Form.Item>
+          {getFieldDecorator('age', {
+            rules: [
+              { required: true,message: '请正确输入您的年龄！',min:1},
+              { message: '请正确输入您的年龄！',pattern:/^(?:[1-9][0-9]?|1[01][0-9]|120)$/ },
+              // { required: true,message: '请输入您的年龄！',min:1},
+            ],
+            initialValue: '', // 初始值
+          })(
+            <Input
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="请输入您的年龄"
+            />,
+          )}
+          </Form.Item>   
+          <Form.Item>
+          {getFieldDecorator('detailaddress', {
+            rules: [
+              // { message: '请正确输入您的详细地址！',pattern:/^(?:[1-9][0-9]?|1[01][0-9]|120)$/ },
+              { required: true,message: '请正确输入您的您的详细地址长度应大于10小于200位！！',min:1},
+              { message: '您的详细地址长度应大于10小于200位！',min:10,max:200},
+            ],
+            initialValue: '', // 初始值
+          })(
+            <Input
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="请输入您的详细地址"
+            />,
+          )}
+          </Form.Item>   
+          <Form.Item>
           <div className="jump_link">
-            <Button type="primary" onClick={() => this.handleSubmit()}>
+            <Button type="primary" htmlType="submit" className='login-btn' onClick={() => this.handleSubmit()}>
               注册
             </Button>
             <Button
@@ -146,91 +158,58 @@ class index extends Component {
               登录
             </Button>
           </div>
+          </Form.Item>
+        </Form>
+          </div>
         </div>
       </Contents>
     );
   }
-  //事件
-  onChange = (e) => {
-    this.setState({
-      value: e.target.value,
-    });
-  };
-  //用户名
-  userName = (e) => {
-    this.setState({
-      username: e.target.value,
-    });
-  };
-  //用户id
-  loginid = (e) => {
-    this.setState({
-      loginid: e.target.value,
-    });
-  };
-  //用户手机号
-  phone = (e) => {
-    this.setState({
-      phone: e.target.value,
-    });
-  };
-  //用户性别
-  handleChange(value) {
-    this.setState({
-      sex: value,
-    });
+
+  // 自定义密码验证规则
+  validatorPwd=(rule, value, callback)=>{
+    // 无论验证成功与否callback()必须调用
+    if(!value){
+      callback('请输入密码！')
+    }else if(value.length<4||value.length>12){
+      callback('密码长度应大于4小于12位！') //验证不通过传入错误提示
+    }
+    callback()//验证成功无提示
   }
-  //用户年龄
-  age = (e) => {
-    this.setState({
-      age: e.target.value,
-    });
-  };
-  //详细地址
-  detailaddress = (e) => {
-    this.setState({
-      detailaddress: e.target.value,
-    });
-  };
-  //用户密码
-  userPassword = (e) => {
-    this.setState({
-      password: e.target.value,
-    });
-  };
-  //点击注册将信息发送给后端
-  handleSubmit() {
-    let { value, username, password, loginid, phone, sex, age, detailaddress } = this.state;
-    let payload = {
-      username,
-      password,
-      value,
-      loginid,
-      phone,
-      sex,
-      age,
-      detailaddress,
-    };
-    new Promise((resolve, reject) => {
-      this.props.dispatch({
-        //user/register,user是model里的命名空间，register是命名空间里的一个方法
-        type: 'user/register',
-        resolve,
-        reject,
-        payload,
+  handleSubmit = e => {
+    this.props.form.validateFields(
+      async (err, values) => { //可以对所有结果校验，并返回结果
+        if (!err) {
+          values.value=this.state.value;
+         const  payload=Object.assign(values)
+          new Promise((resolve, reject) => {
+            this.props.dispatch({
+              //user/register,user是model里的命名空间，register是命名空间里的一个方法
+              type: 'user/register',
+              resolve,
+              reject,
+              payload,
+            });
+          }).then((data) => {
+            if (data.data.status === 1) {
+              message.success(data.data.info);
+            } else {
+              // message.error(data.data.info);
+            }
+          });
+        }
       });
-    }).then((data) => {
-      if (data.data.status === 1) {
-        alert(data.data.info);
-      } else {
-        alert(data.data.info);
-      }
-    });
+  };
+  onChange(e){
+    this.setState({
+      value:e.target.value
+    })
   }
 }
+const WrappeLoginForm = Form.create({ name: 'normal_login' })(index);
 function mapStateToProps(state) {
   return {
     ...state,
   };
 }
-export default connect(mapStateToProps)(index);
+export default connect(mapStateToProps)(WrappeLoginForm);

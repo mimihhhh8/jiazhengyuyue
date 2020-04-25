@@ -14,7 +14,7 @@ export const Contents = styled.div`
   align-items: center;
   .Centerbox {
     width: 400px;
-    height: 650px;
+    /* height: 650px; */
     border-radius: 10px;
     background: #fff;
     padding: 35px 35px;
