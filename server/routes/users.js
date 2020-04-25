@@ -12,6 +12,7 @@ router.post("/delpingjia",userController.delpingjia);
 router.post("/register",userController.userRegister);
 //用户信息列表
 router.get("/userInfoList",userController.userInfo);
+router.get("/searchValue",userController.searchValue);
 //重置密码
 router.post("/resetpassword",userController.resetpassword)
 

@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Button, Modal, Tooltip, Drawer, message, Menu, Dropdown } from 'antd';
+import { Table, Button, Modal, Tooltip, Drawer, message, Menu, Dropdown,Input } from 'antd';
 import {
-  DiffFilled,
   DeleteOutlined,
-  UserOutlined,
-  LikeTwoTone,
-  SettingTwoTone,
 } from '@ant-design/icons';
 import _ from 'lodash';
 
@@ -303,6 +299,16 @@ class index extends Component {
   render() {
     return (
       <div>
+        
+       {/* <Select defaultValue="1" 
+       style={{ width: '7rem' }}
+       onChange={this.selectHandleChange}>
+       <Option value="1">按名称搜索</Option>
+       <Option value="2">按描述搜索</Option>
+       </Select> */}
+      <Input style={{width:200,marginLeft:6,marginRight:6}}  onChange={(e)=>this.inputValue(e)} value={this.state.searchValue} />
+      <Button type='primary' style={{transform:'scale(1)'}} onClick={(e)=>this.searchBtn(e)} >搜索</Button>
+      
         <Table
           rowKey={item => item._id}
           columns={this.state.columns}
@@ -366,12 +372,38 @@ class index extends Component {
       YyDetailvisible: false,
     });
   };
+  inputValue(e){
+this.setState({
+  searchValue:e.target.value
+})
+    // this.renderList();
+  }
+  searchBtn(){
+    let payload = {
+      searchValue: this.state.searchValue,
+    };
+    new Promise((resolve, reject) => {
+      this.props.dispatch({
+        //dispatch触发l一个action
+        //user是命名空间（models中），login是user下面的方法
+        type: 'user/searchValue',
+        resolve,
+        reject,
+        payload,
+      });
+    }).then(data => {
+      let filterData = _.filter(data.data, e => e.userstatus == 'unadmin');
+      this.setState({
+        list: filterData,
+      });
+    })
+  }
   componentDidMount() {
     this.renderList();
   }
-  renderList() {
+  renderList(searchValue) {
     let payload = {
-      searchValue: this.state.searchValue,
+      searchValue: "",
     };
     new Promise((resolve, reject) => {
       this.props.dispatch({

@@ -15,6 +15,9 @@ export default{
     userInfoList:{
         userInfoList:({payload})=>get(`/users/userInfoList?serviceSearch=${payload.searchValue}`)
     },
+    searchValue:{
+        searchValue:({payload})=>get(`/users/searchValue?searchValue=${payload.searchValue}`)
+    },
     //服务列表
     serviceList:{
         serviceList:({payload})=>get(`/service/serviceList?serviceSearch=${payload.searchValue}`)

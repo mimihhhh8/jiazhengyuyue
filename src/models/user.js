@@ -52,6 +52,12 @@ export default {
         resolve(res.data);
       }
     },
+    *searchValue({ resolve, payload }, { call, put }) {
+      const res = yield call(servers.searchValue['searchValue'], { payload });
+      if (res) {
+        resolve(res.data);
+      }
+    },
     *serviceSave({ reject, resolve, payload }, { call, put }) {
       const res = yield call(servers.serviceSave['serviceSave'], { payload });
       if (res) {

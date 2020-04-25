@@ -42,6 +42,10 @@ const userInfo = searchValue => {
     return User.find({ username: { $regex: searchValue } });
   }
 };
+const searchValue = (searchValue) => {
+  let contition = { username: new RegExp(`^.*${searchValue}.*$`) }
+    return User.find(contition);
+};
 const userPass = id => {
   return User.findOne({ _id: id });
 };
@@ -124,6 +128,7 @@ module.exports = {
   userInter,
   deleteYuyueUser,
   //用户总信息
+  searchValue,
   userInfo,
   // 将预约成功的服务人员信息存入用户信息中
   saveOrderInfo,

@@ -110,7 +110,7 @@ const userLogin = async (req, res) => {
 
          */
     // console.log(userData[0].status)
-    if (userData[0].Jurisdiction == true) {
+    if (userData[0].Jurisdiction === true) {
       // 创建加密算法
 
       const hash = crypto.createHash('sha256');
@@ -182,6 +182,24 @@ const userInfo = async (req, res) => {
     });
   }
 };
+const searchValue = async (req, res) => {
+  let { searchValue } = req.query;
+  console.log(searchValue)
+  let userInfoList = await userModel.searchValue(searchValue);
+
+  if (userInfoList) {
+    res.json({
+      errMsg: '',
+      data: userInfoList,
+      info: '数据请求成功',
+    });
+  } else {
+    res.json({
+      errMsg: '',
+      info: '数据请求失败',
+    });
+  }
+};
 //--------------------------------------------------------------------
 //修改密码
 const userPassword = async (req, res) => {
@@ -193,7 +211,7 @@ const userPassword = async (req, res) => {
   hash1.update(oldpassword);
   // console.log(hash1.digest('hex'),"输入的旧密码")
   // console.log(data.password,'数据库中的密码')
-  if (data.password == hash1.digest('hex')) {
+  if (data.password === hash1.digest('hex')) {
     const newhash = crypto.createHash('sha256');
     // //加密 3、对数据进行加密
     newhash.update(newpassword);
@@ -315,7 +333,7 @@ const hourDataList = async (req, res) => {
   // console.log(page,limit,startDate,endDate)
   let data = await userModel.hourDataPage(page, limit);
   let allData = await userModel.allData();
-  if (data.length !== 0) {
+  if (data.length != 0) {
     //查询
     let searchData = await userModel.searchDate(page, limit, startDate, endDate);
     if (searchData) {
@@ -370,6 +388,7 @@ const searchDateCount = async (req, res) => {
 module.exports = {
   userRegister,
   userLogin,
+  searchValue,
   userInfo,
   delpingjia,
   userPassword,

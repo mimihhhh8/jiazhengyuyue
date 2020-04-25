@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Button, Modal, Tooltip, Drawer, Menu, Dropdown } from 'antd';
-import { DiffFilled, DeleteOutlined, SettingTwoTone } from '@ant-design/icons';
+import { Table, Button, Modal, Drawer, Menu, Dropdown,Input } from 'antd';
 import _ from 'lodash';
 class index extends Component {
   constructor() {
@@ -11,6 +10,7 @@ class index extends Component {
       password: '',
       list: [],
       Yylist: [],
+      searchValue: '',
       YyDetailvisible: false,
       visible: false,
       id: '',
@@ -233,6 +233,8 @@ class index extends Component {
   render() {
     return (
       <div>
+         <Input style={{width:200,marginLeft:6,marginRight:6}}  onChange={(e)=>this.inputValue(e)} value={this.state.searchValue} />
+      <Button type='primary' style={{transform:'scale(1)'}} onClick={(e)=>this.searchBtn(e)} >搜索</Button>
         <Table
           rowKey={item => item._id}
           columns={this.state.columns}
@@ -256,6 +258,32 @@ class index extends Component {
       </div>
     );
   }
+  inputValue(e){
+    this.setState({
+      searchValue:e.target.value
+    })
+        // this.renderList();
+      }
+      searchBtn(){
+        let payload = {
+          searchValue: this.state.searchValue,
+        };
+        new Promise((resolve, reject) => {
+          this.props.dispatch({
+            //dispatch触发l一个action
+            //user是命名空间（models中），login是user下面的方法
+            type: 'user/searchValue',
+            resolve,
+            reject,
+            payload,
+          });
+        }).then(data => {
+          let filterData = _.filter(data.data, e => e.userstatus == 'admin');
+          this.setState({
+            list: filterData,
+          });
+        })
+      }
   componentDidMount() {
     this.renderList();
   }
