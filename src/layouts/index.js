@@ -81,6 +81,9 @@ export default class BasicLayout extends Component {
                     <Menu.Item key="10" onClick={() => router.push('/PJmanage')}>
                       评价管理
                     </Menu.Item>
+                    <Menu.Item key="11" onClick={() => router.push('/manageuser')}>
+                      添加服务人员信息
+                    </Menu.Item>
                   </SubMenu>
                 ) : null}
                 {localStorage.getItem('userstatus') === 'admin' ? (

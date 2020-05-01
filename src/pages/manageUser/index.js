@@ -25,16 +25,9 @@ class index extends Component {
     return (
       <Contents>
         <div className="Centerbox">
-          <div className="logo">
-            <img
-              src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1580727104224&di=a934c2b465d735d62dbe924fbd1686b0&imgtype=0&src=http%3A%2F%2Fwww.hfhey.com%2Fupload%2Fimage%2F20150730%2F20150730143749774977.jpg"
-              alt=""
-            />
-          </div>
           <div className="radio">
             <Radio.Group onChange={this.onChange} value={this.state.value}>
               <Radio value={'admin'}>客户</Radio>
-              <Radio value={'unadmin'}>服务人员</Radio>
             </Radio.Group>
           </div>
           <div>
@@ -46,7 +39,7 @@ class index extends Component {
               { message: '用户名长度应大于3小于12位！',min:3,max:12},
               { message: '用户名只能含有数字、英文、下划线!',pattern:/^[a-zA-Z0-9_]+$/ },//+号可以匹配任意多个字符
             ],
-            initialValue: 'admin', // 初始值
+            initialValue: '', // 初始值
           })(
             <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -59,7 +52,7 @@ class index extends Component {
             rules: [
               { validator:this.validatorPwd},//自定义校验规则
             ],
-            initialValue: 'admin', // 初始值
+            initialValue: '', // 初始值
           })(
             <Input
               prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -115,15 +108,15 @@ class index extends Component {
           <Form.Item>
           {getFieldDecorator('age', {
             rules: [
-              { required: true,message: '请正确输入您的年龄！',min:1},
-              { message: '请正确输入您的年龄！',pattern:/^(?:[1-9][0-9]?|1[01][0-9]|120)$/ },
+              { required: true,message: '请正确输入年龄！',min:1},
+              { message: '请正确输入年龄！',pattern:/^(?:[1-9][0-9]?|1[01][0-9]|120)$/ },
               // { required: true,message: '请输入您的年龄！',min:1},
             ],
             initialValue: '', // 初始值
           })(
             <Input
               prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="请输入您的年龄"
+              placeholder="请输入年龄"
             />,
           )}
           </Form.Item>   
@@ -131,23 +124,23 @@ class index extends Component {
           {getFieldDecorator('detailaddress', {
             rules: [
               // { message: '请正确输入您的详细地址！',pattern:/^(?:[1-9][0-9]?|1[01][0-9]|120)$/ },
-              { required: true,message: '请正确输入您的您的详细地址长度应大于10小于200位！！',min:1},
-              { message: '您的详细地址长度应大于10小于200位！',min:10,max:200},
+              { required: true,message: '请正确输入详细地址长度应大于10小于200位！！',min:1},
+              { message: '详细地址长度应大于10小于200位！',min:10,max:200},
             ],
             initialValue: '', // 初始值
           })(
             <Input
               prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="请输入您的详细地址"
+              placeholder="请输入详细地址"
             />,
           )}
           </Form.Item>   
           <Form.Item>
           <div className="jump_link">
             <Button type="primary" htmlType="submit" className='login-btn' onClick={() => this.handleSubmit()}>
-              注册
+              完成添加
             </Button>
-            <Button
+            {/* <Button
               type="primary"
               style={{ marginleft: '30px' }}
               onClick={() => {
@@ -155,7 +148,7 @@ class index extends Component {
               }}
             >
               登录
-            </Button>
+            </Button> */}
           </div>
           </Form.Item>
         </Form>
